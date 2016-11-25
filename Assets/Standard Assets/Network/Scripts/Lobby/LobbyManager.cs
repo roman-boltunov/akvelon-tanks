@@ -92,28 +92,40 @@ namespace Prototype.NetworkLobby
 
 
             backButton.gameObject.SetActive(false);
-            attackButton = GameObject.Find("AttackButton").GetComponent<Button>();
             GetComponent<Canvas>().enabled = true;
 
             DontDestroyOnLoad(gameObject);
 
             SetServerInfo("Offline", "None");
 
+            // WTF???
+            var attackGameobject = GameObject.Find("AttackButton");
+            if (attackGameobject == null)
+            {
+                return;
+            }
 
-            attackButton.onClick.AddListener(() => {
-                for (int i = 0; i < lobbySlots.Length; ++i)
+            this.attackButton = attackGameobject.GetComponent<Button>();
+            if (this.attackButton == null)
+            {
+                return;
+            }
+
+            this.attackButton.onClick.AddListener(() =>
                 {
-                    if (lobbySlots[i] != null)
+                    foreach (NetworkLobbyPlayer lobbyPlayer in lobbySlots)
                     {
-                        (lobbySlots[i] as LobbyPlayer).RpcHostIsReady();
+                        if (lobbyPlayer != null)
+                        {
+                            (lobbyPlayer as LobbyPlayer).RpcHostIsReady();
+                        }
                     }
-                }
 
-                if (_standLobbyConnection != null)
-                {
-                    _standLobbyConnection.Send(MsgType.Highest + 104, new AttackMsg());
-                }
-            });
+                    if (_standLobbyConnection != null)
+                    {
+                        _standLobbyConnection.Send(MsgType.Highest + 104, new AttackMsg());
+                    }
+                });
         }
 
         class AttackMsg : MessageBase { }
