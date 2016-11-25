@@ -106,16 +106,11 @@ public class TankMovement : NetworkBehaviour
     /// </summary>
     private float originalPitch;              // The pitch of the audio source at the start of the scene.
 
-    /// <summary>
-    /// The turret.
-    /// </summary>
-    private GameObject turret;
-
-    private GameObject playerCamera;
-
     private float androidRotation;
 
     private Vector3 androidMovement;
+
+    private Transform enemyNameTransform;
 
     /// This function is called at the start of each round to make sure each tank is set up correctly.
     /// <summary>
@@ -146,15 +141,6 @@ public class TankMovement : NetworkBehaviour
     }
 
     /// <summary>
-    /// The on start local player.
-    /// </summary>
-    public override void OnStartLocalPlayer()
-    {
-        this.AttachCameraToTank();
-        base.OnStartLocalPlayer();
-    }
-
-    /// <summary>
     /// The awake.
     /// </summary>
     [UsedImplicitly]
@@ -172,36 +158,12 @@ public class TankMovement : NetworkBehaviour
         // The axes are based on player number.
         this.horizontalAxis = "Horizontal" + (this.localID + 1);
         this.verticalAxis = "Vertical" + (this.localID + 1);
-        
-
-        var renderers = this.transform.Find("TankRenderers");
-        this.turret = renderers.transform.Find("TankTurret").gameObject;
 
         // Store the original pitch of the audio source.
         this.originalPitch = this.movementAudio.pitch;
     }
 
-    /// <summary>
-    /// The attach camera to tank.
-    /// </summary>
-    private void AttachCameraToTank()
-    {
-        var renderers = this.transform.Find("TankRenderers");
-        this.turret = renderers.transform.Find("TankTurret").gameObject;
-
-        this.playerCamera = GameObject.FindGameObjectWithTag("MainCamera");
-
-        this.playerCamera.transform.parent = this.gameObject.transform;
-#if UNITY_ANDROID
-        this.playerCamera.transform.localPosition = new Vector3(0, 2.2f, 0);
-        this.gameObject.transform.forward = this.playerCamera.transform.forward;
-#else 
-        this.playerCamera.transform.localPosition = new Vector3(0, 2.1f, 0);
-        this.playerCamera.transform.forward = this.turret.transform.forward;
-#endif
-
-        this.playerCamera.transform.localRotation = Quaternion.identity;
-    }
+    
 
     /// <summary>
     /// The update.
@@ -220,8 +182,6 @@ public class TankMovement : NetworkBehaviour
 
         this.androidMovement = transform.forward * this.speed * Time.deltaTime;
         this.androidRotation = this.turnSpeed * Time.deltaTime;
-
-        this.turret.transform.forward = this.playerCamera.transform.forward;
 
         this.EngineAudio();
     }
