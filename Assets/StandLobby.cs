@@ -77,7 +77,8 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 	private void playRawImage(RawImage rawImage, bool play) {
 		if (!rawImage) return;
 
-		MovieTexture movie = rawImage.texture as MovieTexture;
+#if !UNITY_ANDROID
+        MovieTexture movie = rawImage.texture as MovieTexture;
 		if (!movie) return;
 
 		movie.loop = true;
@@ -86,6 +87,7 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 		} else {
 			movie.Stop();
 		}
+#endif
 	}
 
 	private void setActivePanel(GameObject activePanel) {
