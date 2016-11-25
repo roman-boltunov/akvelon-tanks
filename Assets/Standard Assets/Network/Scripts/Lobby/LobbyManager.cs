@@ -102,6 +102,12 @@ namespace Prototype.NetworkLobby
                     }
                 }
                 if (ready) {
+
+                    if (_standLobbyConnection != null)
+                    {
+                        _standLobbyConnection.Send(MsgType.Highest + 111, new AttackMsg());
+                    }
+
                     StartCoroutine(ServerCountdownCoroutine());
                 }
             });
@@ -426,6 +432,7 @@ namespace Prototype.NetworkLobby
 
         public IEnumerator ServerCountdownCoroutine()
         {
+
             float remainingTime = prematchCountdown;
             int floorTime = Mathf.FloorToInt(remainingTime);
 

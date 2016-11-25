@@ -56,7 +56,11 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 			client.RegisterHandler(MsgType.Highest + 104, (NetworkMessage netMsg) => {
 					SetActivePanel(defencePanel);
+            });
 
+			// start in spectrator mode
+			client.RegisterHandler(MsgType.Highest + 111, (NetworkMessage netMsg) => {
+					this.ServerChangeScene("CompleteMainScene");
             });
 
 			string serverIP = GameObject.Find("InputField").GetComponent<InputField>().text;
@@ -184,8 +188,11 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
     }
 
 	public void SendAttackEvent() {
+//		this.CheckReadyToBegin();
+
 		bool isSent = this.client.Send (MsgType.Highest + 103, new EmptyMsg());
 		Debug.Log("StartFame msg sent: " + isSent);
+	
 	}
 
     class EmptyMsg : MessageBase { }
