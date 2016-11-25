@@ -113,6 +113,10 @@ public class TankMovement : NetworkBehaviour
 
     private GameObject playerCamera;
 
+    private float androidRotation;
+
+    private Vector3 androidMovement;
+
     /// This function is called at the start of each round to make sure each tank is set up correctly.
     /// <summary>
     /// The set defaults.
@@ -184,9 +188,15 @@ public class TankMovement : NetworkBehaviour
     {
         var renderers = this.transform.Find("TankRenderers");
         this.turret = renderers.transform.Find("TankTurret").gameObject;
+
         this.playerCamera = GameObject.FindGameObjectWithTag("MainCamera");
         this.playerCamera.transform.parent = this.gameObject.transform;
+#if UNITY_ANDROID
         this.playerCamera.transform.localPosition = new Vector3(0, 2.2f, 0);
+#else 
+        this.playerCamera.transform.localPosition = new Vector3(0, 2.1f, 0);
+#endif
+
         this.playerCamera.transform.localRotation = Quaternion.identity;
         this.playerCamera.transform.forward = this.turret.transform.forward;
     }
@@ -209,16 +219,10 @@ public class TankMovement : NetworkBehaviour
         this.androidMovement = transform.forward * this.speed * Time.deltaTime;
         this.androidRotation = this.turnSpeed * Time.deltaTime;
 
-        Debug.Log(this.androidMovement);
-
         this.turret.transform.forward = this.playerCamera.transform.forward;
 
         this.EngineAudio();
     }
-
-    private float androidRotation;
-
-    private Vector3 androidMovement;
 
     /// <summary>
     /// The engine audio.
