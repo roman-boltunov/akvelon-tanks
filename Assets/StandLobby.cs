@@ -59,12 +59,12 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
             });
 
-			// string serverIP = GameObject.Find("InputField").GetComponent<InputField>().text;
+			string serverIP = GameObject.Find("InputField").GetComponent<InputField>().text;
 
-			// Debug.Log("serverIP: " + serverIP);
+			Debug.Log("serverIP: " + serverIP);
 
-			// client.Connect (serverIP, 7777);
-			client.Connect ("127.0.0.1", 7777);
+			client.Connect (serverIP, 7777);
+			//client.Connect ("127.0.0.1", 7777);
 		});
 
 		/*var faceRecognition = connectPanel.AddComponent<FaceRecognition>();
