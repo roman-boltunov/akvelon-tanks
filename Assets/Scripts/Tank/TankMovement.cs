@@ -190,15 +190,17 @@ public class TankMovement : NetworkBehaviour
         this.turret = renderers.transform.Find("TankTurret").gameObject;
 
         this.playerCamera = GameObject.FindGameObjectWithTag("MainCamera");
+
         this.playerCamera.transform.parent = this.gameObject.transform;
 #if UNITY_ANDROID
         this.playerCamera.transform.localPosition = new Vector3(0, 2.2f, 0);
+        this.gameObject.transform.forward = this.playerCamera.transform.forward;
 #else 
         this.playerCamera.transform.localPosition = new Vector3(0, 2.1f, 0);
+        this.playerCamera.transform.forward = this.turret.transform.forward;
 #endif
 
         this.playerCamera.transform.localRotation = Quaternion.identity;
-        this.playerCamera.transform.forward = this.turret.transform.forward;
     }
 
     /// <summary>
