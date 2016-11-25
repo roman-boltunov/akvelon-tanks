@@ -28,6 +28,15 @@ namespace Assets.Scripts.Tank
             this.turret = renderers.transform.Find("TankTurret").gameObject;
         }
 
+        [UsedImplicitly]
+        private void Update()
+        {
+            if (this.playerCamera != null && this.turret != null)
+            {
+                this.turret.transform.forward = this.playerCamera.transform.forward;
+            }
+        }
+
         /// <summary>
         /// The attach camera to tank.
         /// </summary>
