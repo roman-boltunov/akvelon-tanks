@@ -63,6 +63,13 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 		statusInfo = GameObject.Find("TextStatusInfo").GetComponent<Text>();
 
+		var faceRecognition = connectPanel.AddComponent<FaceRecognition>();
+
+		GameObject.Find("ButtonRecognize").GetComponent<Button>().onClick.AddListener(() =>
+		{
+			faceRecognition.Recognize(WebCamCapture.WebCamTexture);
+		});
+
 	}
 
 	private void startStopMainPageVideo(bool isPlaying) {
