@@ -25,13 +25,13 @@ public class TankMovement : NetworkBehaviour
     /// The speed.
     /// </summary>
     [SerializeField]
-    public float speed = 12f;                   // How fast the tank moves forward and back.
+    public float speed = 0.3f;                   // How fast the tank moves forward and back.
 
     /// <summary>
     /// The turn speed.
     /// </summary>
     [SerializeField]
-    public float turnSpeed = 180f;              // How fast the tank turns in degrees per second.
+    public float turnSpeed = 10;              // How fast the tank turns in degrees per second.
 
     /// <summary>
     /// The pitch range.
@@ -206,17 +206,19 @@ public class TankMovement : NetworkBehaviour
         this.verticalInput = Input.GetAxis(this.verticalAxis);
         this.horizontalInput = Input.GetAxis(this.horizontalAxis);
 
-        this.mova = 0.1f * transform.forward * this.speed * Time.deltaTime;
-        this.rotat = 0.1f * this.turnSpeed * Time.deltaTime;
+        this.androidMovement = transform.forward * this.speed * Time.deltaTime;
+        this.androidRotation = this.turnSpeed * Time.deltaTime;
+
+        Debug.Log(this.androidMovement);
 
         this.turret.transform.forward = this.playerCamera.transform.forward;
 
         this.EngineAudio();
     }
 
-    private float rotat;
+    private float androidRotation;
 
-    private Vector3 mova;
+    private Vector3 androidMovement;
 
     /// <summary>
     /// The engine audio.
@@ -259,58 +261,60 @@ public class TankMovement : NetworkBehaviour
             return;
         }
 
+#if UNITY_ANDROID
         // Push left and right (move forward)
         if (this.verticalInput > 0 && this.horizontalInput > 0)
         {
-            this.rigidbody.MovePosition(this.rigidbody.position + this.mova);
+            this.rigidbody.MovePosition(this.rigidbody.position + this.androidMovement);
         }
         // Pull left and right (move backwards)
         else if (this.verticalInput < 0 && this.horizontalInput < 0)
         {
-            this.rigidbody.MovePosition(this.rigidbody.position - this.mova);
+            this.rigidbody.MovePosition(this.rigidbody.position - this.androidMovement);
         }
         // Push left and pull right (rotate to right)
         else if (this.verticalInput > 0 && this.horizontalInput < 0)
         {
-            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, this.rotat, 0f));
+            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, this.androidRotation, 0f));
         }
         // Push right and pull left (rotate to left)
         else if (this.verticalInput < 0 && this.horizontalInput > 0)
         {
-            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, -this.rotat, 0f));
+            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, -this.androidRotation, 0f));
         }
         // Push left forward (move right forward)
         else if (this.verticalInput > 0)
         {
-            this.rigidbody.MovePosition(this.transform.position + this.mova);
+            this.rigidbody.MovePosition(this.transform.position + this.androidMovement);
 
-            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, this.rotat, 0f));
+            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, this.androidRotation, 0f));
         }
         // Push right forward (move left forward)
         else if (this.horizontalInput > 0)
         {
-            this.rigidbody.MovePosition(this.transform.position + this.mova);
+            this.rigidbody.MovePosition(this.transform.position + this.androidMovement);
 
-            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, -this.rotat, 0f));
+            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, -this.androidRotation, 0f));
         }
         // Pull left (move right backwards)
         else if (this.verticalInput < 0)
         {
-            this.rigidbody.MovePosition(this.transform.position - this.mova);
+            this.rigidbody.MovePosition(this.transform.position - this.androidMovement);
 
-            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, this.rotat, 0f));
+            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, this.androidRotation, 0f));
         }
         // Pull right forward (move left backwards)
         else if (this.horizontalInput < 0)
         {
-            this.rigidbody.MovePosition(this.transform.position - this.mova);
+            this.rigidbody.MovePosition(this.transform.position - this.androidMovement);
 
-            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, -this.rotat, 0f));
+            this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, -this.androidRotation, 0f));
         }
-
+#else
         // Adjust the rigidbodies position and orientation in FixedUpdate.
-        // this.Move();
-        // this.Turn();
+        this.Move();
+        this.Turn();
+#endif
     }
 
     /// <summary>
@@ -319,7 +323,17 @@ public class TankMovement : NetworkBehaviour
     private void Move()
     {
         // Create a movement vector based on the input, speed and the time between frames, in the direction the tank is facing.
-        Vector3 movement = transform.forward * this.verticalInput * this.speed * Time.deltaTime;
+        var verticalMove = 0;
+        if (this.verticalInput > 0)
+        {
+            verticalMove = 1;
+        }
+        else if (this.verticalInput < 0)
+        {
+            verticalMove = -1;
+        }
+
+        var movement = transform.forward * verticalMove * this.speed * Time.deltaTime;
 
         // Apply this movement to the rigidbody's position.
         this.rigidbody.MovePosition(this.rigidbody.position + movement);
@@ -330,8 +344,18 @@ public class TankMovement : NetworkBehaviour
     /// </summary>
     private void Turn()
     {
+        var horizontalMove = 0;
+        if (this.horizontalInput > 0)
+        {
+            horizontalMove = 1;
+        }
+        else if (this.horizontalInput < 0)
+        {
+            horizontalMove = -1;
+        }
+
         // Determine the number of degrees to be turned based on the input, speed and time between frames.
-        var turn = this.horizontalInput * this.turnSpeed * Time.deltaTime;
+        var turn = this.turnSpeed * horizontalMove * Time.deltaTime;
 
         // Make this into a rotation in the y axis.
         var inputRotation = Quaternion.Euler(0f, turn, 0f);
