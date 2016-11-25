@@ -37,8 +37,7 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 				// ping 
 				this.client.Send (MsgType.Highest + 100, new EmptyMsg());
 				SetServerInfo("Connected");
-				mainPanel.SetActive(true);
-				connectPanel.SetActive(false);
+				OnConnectedToServer();
 			});
 
 			// client.RegisterHandler(MsgType.Rpc, OnClientRpc);
@@ -51,6 +50,14 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 			client.Connect ("127.0.0.1", 7777);
 		});
 
+
+		statusInfo = GameObject.Find("TextStatusInfo").GetComponent<Text>();
+
+	}
+
+	private void OnConnectedToServer() {
+		mainPanel.SetActive(true);
+		connectPanel.SetActive(false);
 
 		GameObject.Find("ButtonStartGame").GetComponent<Button>().onClick.AddListener(() =>
 		{
@@ -72,9 +79,6 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 			Debug.Log("StartFame msg sent: " + isSent);
 
 		});
-
-		statusInfo = GameObject.Find("TextStatusInfo").GetComponent<Text>();
-
 	}
 	public Text statusInfo;
 	public void SetServerInfo(string status)
