@@ -11,6 +11,7 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 	private GameObject mainPanel;
 	private GameObject connectPanel;
+	private GameObject defencePanel;
 
 	// Use this for initialization
 
@@ -19,6 +20,8 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 		mainPanel = GameObject.Find("MainPanel").gameObject;
 		connectPanel = GameObject.Find("ConnectPanel").gameObject;
+		defencePanel = GameObject.Find("DefencePanel").gameObject;
+
 		
 		setActivePanel(connectPanel);
 
@@ -69,14 +72,13 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 		if(mainPanel == activePanel) {
 			mainPanel.SetActive(true);
 			startStopMainPageVideo(true);
-
 		} else {
 			startStopMainPageVideo(false);
-			mainPanel.SetActive(true);
+			mainPanel.SetActive(false);
 		}
 		
 		connectPanel.SetActive(connectPanel == activePanel);
-
+		defencePanel.SetActive (defencePanel == activePanel);
 	}
 
 	private void OnConnectedToServer() {
@@ -97,10 +99,11 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 		GameObject.Find("ButtonAttack").GetComponent<Button>().onClick.AddListener(() =>
 		{
-            
-            bool isSent = this.client.Send (MsgType.Highest + 103, new EmptyMsg());
-			Debug.Log("StartFame msg sent: " + isSent);
+				sendAttackEvent();
+		});
 
+		GameObject.Find ("ButtonDefence").GetComponent<Button> ().onClick.AddListener (() => {
+			sendAttackEvent();
 		});
 	}
 	public Text statusInfo;
@@ -127,6 +130,11 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
         Debug.Log("Server ready");
         base.OnServerReady(conn);
     }
+
+	private void sendAttackEvent() {
+		bool isSent = this.client.Send (MsgType.Highest + 103, new EmptyMsg());
+		Debug.Log("StartFame msg sent: " + isSent);
+	}
 
     class EmptyMsg : MessageBase { }
     // private void OnServerConnect(NetworkMessage netMsg)
