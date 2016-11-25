@@ -37,6 +37,25 @@ public class FaceRecognition : MonoBehaviour {
 			if (faces.Length > 0) {
 
 				string faceId = faces[0].faceId;
+			
+				var jsonString = "{'personGroupId':'66549acf-e321-4417-8498-91cc9e0ce819','faceIds':['"+faceId+"'],'maxNumOfCandidatesReturned':1}";
+ 
+				var encoding = new System.Text.UTF8Encoding();
+				var postHeader = new Dictionary<string, string>();
+   
+				postHeader.Add("Content-Type", "application/json");
+				postHeader.Add("Content-Length", jsonString.Length.ToString());
+				postHeader.Add("Ocp-Apim-Subscription-Key", "a0c4cd4744844acfa4863ce0dc9ad2c9");
+ 
+				var request = new WWW("https://api.projectoxford.ai/face/v1.0/identify", encoding.GetBytes(jsonString), postHeader);
+				yield return request;
+
+				string err = request.error;
+				
+
+				 //personGroupId = "66549acf-e321-4417-8498-91cc9e0ce819",
+					// faceIds = [faceId],
+                    // maxNumOfCandidatesReturned = 1
 
 			}
 		}
@@ -51,3 +70,6 @@ class RecognizedFace {
 
 // face detection example
 //[{"faceId":"6a9c46a5-5709-47eb-94c1-9293417dc117","faceRectangle":{"top":243,"left":363,"width":301,"height":301}}
+
+
+//"[{\"faceId\":\"f97538d4-b941-4b7b-a444-be082b94eef6\",\"candidates\":[{\"personId\":\"2ed7bb0b-0d26-4617-88b4…"
