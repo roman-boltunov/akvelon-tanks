@@ -43,7 +43,13 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 			client.RegisterHandler(MsgType.Error, OnError);
 
 			client.RegisterHandler(MsgType.Highest + 104, (NetworkMessage netMsg) => {
-                GameObject.Find("ButtonAttack").GetComponent<Button>().GetComponentInChildren<Text>().text = "Defense";
+					setActivePanel(defencePanel);
+
+					// TODO: verify that is will be called only once (on game restart).
+					GameObject.Find ("ButtonDefence").GetComponent<Button> ().onClick.AddListener (() => {
+						sendAttackEvent();
+					});
+
             });
 
 			// string serverIP = GameObject.Find("InputField").GetComponent<InputField>().text;
@@ -61,14 +67,21 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 	private void startStopMainPageVideo(bool isPlaying) {
 		// set/stop main panel video
-		RawImage renderer = mainPanel.GetComponent<RawImage>();
-		if (!renderer) return;
+		playRawImage(mainPanel.GetComponent<RawImage>(), isPlaying);
+	}
 
-		MovieTexture movie = renderer.texture as MovieTexture;
+	private void playDefencePageVideo(bool play) {
+		playRawImage(defencePanel.GetComponent<RawImage> (), play);
+	}
+
+	private void playRawImage(RawImage rawImage, bool play) {
+		if (!rawImage) return;
+
+		MovieTexture movie = rawImage.texture as MovieTexture;
 		if (!movie) return;
 
 		movie.loop = true;
-		if (isPlaying) {
+		if (play) {
 			movie.Play();
 		} else {
 			movie.Stop();
@@ -86,7 +99,14 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 		}
 		
 		connectPanel.SetActive(connectPanel == activePanel);
-		defencePanel.SetActive (defencePanel == activePanel);
+
+		if (defencePanel == activePanel) {
+			defencePanel.SetActive (true);
+			playDefencePageVideo (true);
+		} else {
+			playDefencePageVideo (false);
+			defencePanel.SetActive (false);
+		}
 	}
 
 	private void OnConnectedToServer() {
@@ -109,10 +129,6 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 		{
 				sendAttackEvent();
 		});
-
-		// GameObject.Find ("ButtonDefence").GetComponent<Button> ().onClick.AddListener (() => {
-		// 	sendAttackEvent();
-		// });
 	}
 	public Text statusInfo;
 	public void SetServerInfo(string status)
