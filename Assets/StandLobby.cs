@@ -92,18 +92,18 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 	private void OnConnectedToServer() {
 		setActivePanel(mainPanel);
 
-		GameObject.Find("ButtonStartGame").GetComponent<Button>().onClick.AddListener(() =>
-		{
-            this.CheckReadyToBegin();
-			bool isSent = this.client.Send (MsgType.Highest + 101, new EmptyMsg());
-			Debug.Log("StartFame msg sent: " + isSent);
-		});
+		// GameObject.Find("ButtonStartGame").GetComponent<Button>().onClick.AddListener(() =>
+		// {
+        //     this.CheckReadyToBegin();
+		// 	bool isSent = this.client.Send (MsgType.Highest + 101, new EmptyMsg());
+		// 	Debug.Log("StartFame msg sent: " + isSent);
+		// });
 
-		GameObject.Find("ButtonStopGame").GetComponent<Button>().onClick.AddListener(() =>
-		{
-			bool isSent = this.client.Send (MsgType.Highest + 102, new EmptyMsg());
-			Debug.Log("StartFame msg sent: " + isSent);
-		});
+		// GameObject.Find("ButtonStopGame").GetComponent<Button>().onClick.AddListener(() =>
+		// {
+		// 	bool isSent = this.client.Send (MsgType.Highest + 102, new EmptyMsg());
+		// 	Debug.Log("StartFame msg sent: " + isSent);
+		// });
 
 		GameObject.Find("ButtonAttack").GetComponent<Button>().onClick.AddListener(() =>
 		{
