@@ -220,6 +220,7 @@ public class TankMovement : NetworkBehaviour
     [UsedImplicitly]
     private void FixedUpdate()
     {
+        var threshold = 0.2f;
         if (!this.isLocalPlayer)
         {
             return;
@@ -227,48 +228,48 @@ public class TankMovement : NetworkBehaviour
 
 #if UNITY_ANDROID
         // Push left and right (move forward)
-        if (this.verticalInput > 0 && this.horizontalInput > 0)
+        if (this.verticalInput > threshold && this.horizontalInput > threshold)
         {
             this.rigidbody.MovePosition(this.rigidbody.position + this.androidMovement);
         }
         // Pull left and right (move backwards)
-        else if (this.verticalInput < 0 && this.horizontalInput < 0)
+        else if (this.verticalInput < -threshold && this.horizontalInput < -threshold)
         {
             this.rigidbody.MovePosition(this.rigidbody.position - this.androidMovement);
         }
         // Push left and pull right (rotate to right)
-        else if (this.verticalInput > 0 && this.horizontalInput < 0)
+        else if (this.verticalInput > threshold && this.horizontalInput < -threshold)
         {
             this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, this.androidRotation, 0f));
         }
         // Push right and pull left (rotate to left)
-        else if (this.verticalInput < 0 && this.horizontalInput > 0)
+        else if (this.verticalInput < -threshold && this.horizontalInput > threshold)
         {
             this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, -this.androidRotation, 0f));
         }
         // Push left forward (move right forward)
-        else if (this.verticalInput > 0)
+        else if (this.verticalInput > threshold)
         {
             this.rigidbody.MovePosition(this.transform.position + this.androidMovement);
 
             this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, this.androidRotation, 0f));
         }
         // Push right forward (move left forward)
-        else if (this.horizontalInput > 0)
+        else if (this.horizontalInput > threshold)
         {
             this.rigidbody.MovePosition(this.transform.position + this.androidMovement);
 
             this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, -this.androidRotation, 0f));
         }
         // Pull left (move right backwards)
-        else if (this.verticalInput < 0)
+        else if (this.verticalInput < -threshold)
         {
             this.rigidbody.MovePosition(this.transform.position - this.androidMovement);
 
             this.rigidbody.MoveRotation(this.rigidbody.rotation * Quaternion.Euler(0f, this.androidRotation, 0f));
         }
         // Pull right forward (move left backwards)
-        else if (this.horizontalInput < 0)
+        else if (this.horizontalInput < -threshold)
         {
             this.rigidbody.MovePosition(this.transform.position - this.androidMovement);
 
