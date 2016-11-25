@@ -61,9 +61,17 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 	private void startStopMainPageVideo(bool isPlaying) {
 		// set/stop main panel video
-		Renderer mainPageVideo = GetComponent<Renderer>();
-		if (mainPageVideo) {
-			((MovieTexture)mainPageVideo.material.mainTexture).Play();
+		RawImage renderer = mainPanel.GetComponent<RawImage>();
+		if (!renderer) return;
+
+		MovieTexture movie = renderer.texture as MovieTexture;
+		if (!movie) return;
+
+		movie.loop = true;
+		if (isPlaying) {
+			movie.Play();
+		} else {
+			movie.Stop();
 		}
 	}
 
@@ -102,9 +110,9 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 				sendAttackEvent();
 		});
 
-		GameObject.Find ("ButtonDefence").GetComponent<Button> ().onClick.AddListener (() => {
-			sendAttackEvent();
-		});
+		// GameObject.Find ("ButtonDefence").GetComponent<Button> ().onClick.AddListener (() => {
+		// 	sendAttackEvent();
+		// });
 	}
 	public Text statusInfo;
 	public void SetServerInfo(string status)
