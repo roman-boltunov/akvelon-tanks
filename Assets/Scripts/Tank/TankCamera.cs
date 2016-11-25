@@ -50,10 +50,10 @@ namespace Assets.Scripts.Tank
 
             this.playerCamera.transform.parent = this.gameObject.transform;
 #if UNITY_ANDROID
-            this.playerCamera.transform.localPosition = new Vector3(0, 2.2f, 0);
+            this.playerCamera.transform.localPosition = new Vector3(0, 2.2f, -1);
             this.gameObject.transform.forward = this.playerCamera.transform.forward;
 #else 
-        this.playerCamera.transform.localPosition = new Vector3(0, 2.1f, 0);
+        this.playerCamera.transform.localPosition = new Vector3(0, 2.1f, -1);
         this.playerCamera.transform.forward = this.turret.transform.forward;
 #endif
 
