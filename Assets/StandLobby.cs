@@ -12,6 +12,10 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 	private GameObject mainPanel;
 	private GameObject connectPanel;
 	private GameObject defencePanel;
+	private GameObject recognitionPanel;
+	public GameObject instructionsPanel;
+
+	private InstructionsScript instructionsScript;
 
 	// Use this for initialization
 
@@ -21,6 +25,12 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 		mainPanel = GameObject.Find("MainPanel").gameObject;
 		connectPanel = GameObject.Find("ConnectPanel").gameObject;
 		defencePanel = GameObject.Find("DefencePanel").gameObject;
+		recognitionPanel = GameObject.Find ("RecognitionPanel").gameObject;
+		instructionsPanel = GameObject.Find ("InstructionsPanel").gameObject;
+
+		instructionsScript = instructionsPanel.GetComponent<InstructionsScript> ();
+
+		setupControls ();
 
 		
 		setActivePanel(connectPanel);
@@ -45,11 +55,6 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 			client.RegisterHandler(MsgType.Highest + 104, (NetworkMessage netMsg) => {
 					setActivePanel(defencePanel);
 
-					// TODO: verify that is will be called only once (on game restart).
-					GameObject.Find ("ButtonDefence").GetComponent<Button> ().onClick.AddListener (() => {
-						sendAttackEvent();
-					});
-
             });
 
 			// string serverIP = GameObject.Find("InputField").GetComponent<InputField>().text;
@@ -72,6 +77,12 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 	}
 
+	private void setupControls() {
+		GameObject.Find ("ButtonDefence").GetComponent<Button> ().onClick.AddListener (() => {
+			setActivePanel(recognitionPanel);
+		});
+	}
+
 	private void startStopMainPageVideo(bool isPlaying) {
 		// set/stop main panel video
 		playRawImage(mainPanel.GetComponent<RawImage>(), isPlaying);
@@ -81,7 +92,7 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 		playRawImage(defencePanel.GetComponent<RawImage> (), play);
 	}
 
-	private void playRawImage(RawImage rawImage, bool play) {
+	public void playRawImage(RawImage rawImage, bool play) {
 		if (!rawImage) return;
 
 #if !UNITY_ANDROID
@@ -97,7 +108,7 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 #endif
 	}
 
-	private void setActivePanel(GameObject activePanel) {
+	public void setActivePanel(GameObject activePanel) {
 		// set/stop main panel video
 		if(mainPanel == activePanel) {
 			mainPanel.SetActive(true);
@@ -106,8 +117,17 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 			startStopMainPageVideo(false);
 			mainPanel.SetActive(false);
 		}
-		
+			
 		connectPanel.SetActive(connectPanel == activePanel);
+		recognitionPanel.SetActive (recognitionPanel == activePanel);
+
+		if (instructionsPanel == activePanel) {
+			instructionsPanel.SetActive (true);
+			instructionsScript.playVideo (true);
+		} else {
+			instructionsScript.playVideo (false);
+			instructionsPanel.SetActive (false);
+		}
 
 		if (defencePanel == activePanel) {
 			defencePanel.SetActive (true);
@@ -136,7 +156,7 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 		GameObject.Find("ButtonAttack").GetComponent<Button>().onClick.AddListener(() =>
 		{
-				sendAttackEvent();
+				setActivePanel(recognitionPanel);
 		});
 	}
 	public Text statusInfo;
@@ -164,7 +184,7 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
         base.OnServerReady(conn);
     }
 
-	private void sendAttackEvent() {
+	public void sendAttackEvent() {
 		bool isSent = this.client.Send (MsgType.Highest + 103, new EmptyMsg());
 		Debug.Log("StartFame msg sent: " + isSent);
 	}
