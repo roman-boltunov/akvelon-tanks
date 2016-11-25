@@ -18,13 +18,9 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 	void Start () {
 
 		mainPanel = GameObject.Find("MainPanel").gameObject;
-		mainPanel.SetActive(false);
-
 		connectPanel = GameObject.Find("ConnectPanel").gameObject;
-		connectPanel.SetActive(true);
-
-		//connectPanel = GameObject.Find("ConnectPanel").GetComponent<MonoBehaviour>();
-
+		
+		setActivePanel(connectPanel);
 
 		GameObject.Find("ButtonConnect").GetComponent<Button>().onClick.AddListener(() =>
 		{
@@ -55,9 +51,13 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 	}
 
+	private void setActivePanel(GameObject activePanel) {
+		mainPanel.SetActive(mainPanel == activePanel);
+		connectPanel.SetActive(connectPanel == activePanel);
+	}
+
 	private void OnConnectedToServer() {
-		mainPanel.SetActive(true);
-		connectPanel.SetActive(false);
+		setActivePanel(mainPanel);
 
 		GameObject.Find("ButtonStartGame").GetComponent<Button>().onClick.AddListener(() =>
 		{
