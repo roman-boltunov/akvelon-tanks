@@ -1,19 +1,24 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using JetBrains.Annotations;
+using UnityEngine;
 using UnityEngine.UI;
 
-public class WebCamCapture : MonoBehaviour 
- {
-     public RawImage rawimage;
-     void Start () 
-     {
-		 WebCamCapture.WebCamTexture = new WebCamTexture();
+namespace Assets.Scripts
+{
+    public class WebCamCapture : MonoBehaviour 
+    {
+        [SerializeField]
+        private RawImage rawimage;
 
-         rawimage.texture = WebCamCapture.WebCamTexture;
-         rawimage.material.mainTexture = WebCamCapture.WebCamTexture;
-         WebCamCapture.WebCamTexture.Play();
+        public static WebCamTexture WebCamTexture { get; set; }
 
-     }
+        [UsedImplicitly]
+        private void Start()
+        {
+            WebCamCapture.WebCamTexture = new WebCamTexture();
 
-	 public static WebCamTexture WebCamTexture {get; set;}
- }
+            this.rawimage.texture = WebCamCapture.WebCamTexture;
+            this.rawimage.material.mainTexture = WebCamCapture.WebCamTexture;
+            WebCamCapture.WebCamTexture.Play();
+        }
+    }
+}

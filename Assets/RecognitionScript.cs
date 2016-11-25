@@ -1,36 +1,46 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts;
+using JetBrains.Annotations;
 using UnityEngine.UI;
 
 public class RecognitionScript : MonoBehaviour {
 
 	public Text scanTimeText;
 
-	private float scanTimeLeft;
+    private float scanTimeLeft;
 	private bool isScanned;
+
+    [SerializeField]
 	private StandLobby lobbyScript;
 
 	private float showInstructionsTimeLeft;
 	private bool showInstructions;
+    private FaceRecognition faceRecognition;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+	[UsedImplicitly]
+	private void Start()
+    {
 		scanTimeLeft = 5.0f;
 		isScanned = false;
 		showInstructions = false;
 
-		GameObject gameObject = GameObject.Find ("GameObject");
-		lobbyScript = gameObject.GetComponent<StandLobby> ();
+        this.faceRecognition = this.gameObject.AddComponent<FaceRecognition>();
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	[UsedImplicitly]
+	private void Update() {
 		scanTimeLeft -= Time.deltaTime;
-
+        
 		if (scanTimeLeft < 0 && !isScanned) {
 			isScanned = true;
-			// TODO: scan here.
-			showPerson();
+
+            faceRecognition.Recognize(WebCamCapture.WebCamTexture, name =>
+            {
+                this.ShowPerson();
+            });
 		}
 
 		if (isScanned) {
@@ -43,16 +53,16 @@ public class RecognitionScript : MonoBehaviour {
 			showInstructionsTimeLeft -= Time.deltaTime;
 			if (showInstructionsTimeLeft < 0) {
 				showInstructions = false;
-				lobbyScript.setActivePanel (lobbyScript.instructionsPanel);
+				lobbyScript.SetActivePanel (lobbyScript.instructionsPanel);
 			}
 		}
 	}
 
-	private void showPerson() {
-		showInstructionsPanel ();
+	private void ShowPerson() {
+		ShowInstructionsPanel();
 	}
 
-	private void showInstructionsPanel() {
+	private void ShowInstructionsPanel() {
 		showInstructionsTimeLeft = 2.0f;
 		showInstructions = true;
 	}

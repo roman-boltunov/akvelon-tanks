@@ -13,6 +13,9 @@ public class InstructionsScript : MonoBehaviour {
 	public RawImage instructionImage;
 	public RawImage tankImage;
 
+    [SerializeField]
+    private StandLobby lobby;
+
 	// Use this for initialization
 	void Start () {
 	}
@@ -31,14 +34,12 @@ public class InstructionsScript : MonoBehaviour {
 		if (timeLeft < 0 && !gameStarted) {
 			gameStarted = true;
 
-			GameObject.Find ("GameObject").GetComponent<StandLobby> ().sendAttackEvent ();
-
+			this.lobby.SendAttackEvent();
 		}
 	}
 
-	public void playVideo(bool play) {
-		StandLobby lobby = GameObject.Find ("GameObject").GetComponent<StandLobby> ();
-		lobby.playRawImage (instructionImage, play);
-		lobby.playRawImage (tankImage, play);
+	public void PlayVideo(bool play) {
+		this.lobby.PlayRawImage(instructionImage, play);
+		this.lobby.PlayRawImage(tankImage, play);
 	}
 }

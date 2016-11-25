@@ -1,4 +1,5 @@
-﻿using Prototype.NetworkLobby;
+﻿using JetBrains.Annotations;
+using Prototype.NetworkLobby;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
@@ -9,31 +10,32 @@ using UnityEngine.UI;
 
 public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
+    [SerializeField]
 	private GameObject mainPanel;
-	private GameObject connectPanel;
-	private GameObject defencePanel;
-	private GameObject recognitionPanel;
-	public GameObject instructionsPanel;
 
+    [SerializeField]
+    private GameObject connectPanel;
+
+    [SerializeField]
+    private GameObject defencePanel;
+
+    [SerializeField]
+    private GameObject recognitionPanel;
+
+    [SerializeField]
+    public GameObject instructionsPanel;
+
+    [SerializeField]
 	private InstructionsScript instructionsScript;
 
 	// Use this for initialization
-
-	//http://gamedev.stackexchange.com/questions/102526/why-will-my-server-not-execute-a-command-sent-by-the-client-in-unity-5-1
-	void Start () {
-
-		mainPanel = GameObject.Find("MainPanel").gameObject;
-		connectPanel = GameObject.Find("ConnectPanel").gameObject;
-		defencePanel = GameObject.Find("DefencePanel").gameObject;
-		recognitionPanel = GameObject.Find ("RecognitionPanel").gameObject;
-		instructionsPanel = GameObject.Find ("InstructionsPanel").gameObject;
-
-		instructionsScript = instructionsPanel.GetComponent<InstructionsScript> ();
-
-		setupControls ();
-
+    //http://gamedev.stackexchange.com/questions/102526/why-will-my-server-not-execute-a-command-sent-by-the-client-in-unity-5-1
+	[UsedImplicitly]
+	private void Start()
+    {
+		SetupControls ();
 		
-		setActivePanel(connectPanel);
+		SetActivePanel(connectPanel);
 
 		GameObject.Find("ButtonConnect").GetComponent<Button>().onClick.AddListener(() =>
 		{
@@ -53,7 +55,7 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 			client.RegisterHandler(MsgType.Error, OnError);
 
 			client.RegisterHandler(MsgType.Highest + 104, (NetworkMessage netMsg) => {
-					setActivePanel(defencePanel);
+					SetActivePanel(defencePanel);
 
             });
 
@@ -65,34 +67,31 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 			client.Connect ("127.0.0.1", 7777);
 		});
 
-
-		statusInfo = GameObject.Find("TextStatusInfo").GetComponent<Text>();
-
-		var faceRecognition = connectPanel.AddComponent<FaceRecognition>();
+		/*var faceRecognition = connectPanel.AddComponent<FaceRecognition>();
 
 		GameObject.Find("ButtonRecognize").GetComponent<Button>().onClick.AddListener(() =>
 		{
 			faceRecognition.Recognize(WebCamCapture.WebCamTexture);
-		});
+		});*/
 
 	}
 
-	private void setupControls() {
+	private void SetupControls() {
 		GameObject.Find ("ButtonDefence").GetComponent<Button> ().onClick.AddListener (() => {
-			setActivePanel(recognitionPanel);
+			SetActivePanel(recognitionPanel);
 		});
 	}
 
-	private void startStopMainPageVideo(bool isPlaying) {
+	private void StartStopMainPageVideo(bool isPlaying) {
 		// set/stop main panel video
-		playRawImage(mainPanel.GetComponent<RawImage>(), isPlaying);
+		PlayRawImage(mainPanel.GetComponent<RawImage>(), isPlaying);
 	}
 
-	private void playDefencePageVideo(bool play) {
-		playRawImage(defencePanel.GetComponent<RawImage> (), play);
+	private void PlayDefencePageVideo(bool play) {
+		PlayRawImage(defencePanel.GetComponent<RawImage> (), play);
 	}
 
-	public void playRawImage(RawImage rawImage, bool play) {
+	public void PlayRawImage(RawImage rawImage, bool play) {
 		if (!rawImage) return;
 
 #if !UNITY_ANDROID
@@ -108,13 +107,13 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 #endif
 	}
 
-	public void setActivePanel(GameObject activePanel) {
+	public void SetActivePanel(GameObject activePanel) {
 		// set/stop main panel video
 		if(mainPanel == activePanel) {
 			mainPanel.SetActive(true);
-			startStopMainPageVideo(true);
+			StartStopMainPageVideo(true);
 		} else {
-			startStopMainPageVideo(false);
+			StartStopMainPageVideo(false);
 			mainPanel.SetActive(false);
 		}
 			
@@ -123,23 +122,23 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 		if (instructionsPanel == activePanel) {
 			instructionsPanel.SetActive (true);
-			instructionsScript.playVideo (true);
+			instructionsScript.PlayVideo (true);
 		} else {
-			instructionsScript.playVideo (false);
+			instructionsScript.PlayVideo (false);
 			instructionsPanel.SetActive (false);
 		}
 
 		if (defencePanel == activePanel) {
 			defencePanel.SetActive (true);
-			playDefencePageVideo (true);
+			PlayDefencePageVideo (true);
 		} else {
-			playDefencePageVideo (false);
+			PlayDefencePageVideo (false);
 			defencePanel.SetActive (false);
 		}
 	}
 
 	private void OnConnectedToServer() {
-		setActivePanel(mainPanel);
+		SetActivePanel(mainPanel);
 
 		// GameObject.Find("ButtonStartGame").GetComponent<Button>().onClick.AddListener(() =>
 		// {
@@ -156,7 +155,7 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 		GameObject.Find("ButtonAttack").GetComponent<Button>().onClick.AddListener(() =>
 		{
-				setActivePanel(recognitionPanel);
+				SetActivePanel(recognitionPanel);
 		});
 	}
 	public Text statusInfo;
@@ -184,7 +183,7 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
         base.OnServerReady(conn);
     }
 
-	public void sendAttackEvent() {
+	public void SendAttackEvent() {
 		bool isSent = this.client.Send (MsgType.Highest + 103, new EmptyMsg());
 		Debug.Log("StartFame msg sent: " + isSent);
 	}
