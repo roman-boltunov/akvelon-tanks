@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
-public class TankAttackUIBehaviourScript : NetworkLobbyManager {//NetworkLobbyManager {
+public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 
 	// Use this for initialization
