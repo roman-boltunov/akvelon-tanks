@@ -9,11 +9,22 @@ using UnityEngine.UI;
 
 public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
+	private GameObject mainPanel;
+	private GameObject connectPanel;
 
 	// Use this for initialization
 
 	//http://gamedev.stackexchange.com/questions/102526/why-will-my-server-not-execute-a-command-sent-by-the-client-in-unity-5-1
 	void Start () {
+
+		mainPanel = GameObject.Find("MainPanel").gameObject;
+		mainPanel.SetActive(false);
+
+		connectPanel = GameObject.Find("ConnectPanel").gameObject;
+		connectPanel.SetActive(true);
+
+		//connectPanel = GameObject.Find("ConnectPanel").GetComponent<MonoBehaviour>();
+
 
 		GameObject.Find("ButtonConnect").GetComponent<Button>().onClick.AddListener(() =>
 		{
@@ -26,6 +37,8 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 				// ping 
 				this.client.Send (MsgType.Highest + 100, new EmptyMsg());
 				SetServerInfo("Connected");
+				mainPanel.SetActive(true);
+				connectPanel.SetActive(false);
 			});
 
 			// client.RegisterHandler(MsgType.Rpc, OnClientRpc);
