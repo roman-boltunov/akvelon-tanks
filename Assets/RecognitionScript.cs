@@ -7,6 +7,11 @@ using UnityEngine.UI;
 public class RecognitionScript : MonoBehaviour {
 
 	public Text scanTimeText;
+	public Image cardImage;
+	public Image cardRecognizedImage;
+	public Image cardUnknownImage;
+	public Image faceImage;
+	public Text nameText;
 
     private float scanTimeLeft;
 	private bool isScanned;
@@ -26,6 +31,12 @@ public class RecognitionScript : MonoBehaviour {
 		isScanned = false;
 		showInstructions = false;
 
+		faceImage.gameObject.SetActive (false);
+		nameText.gameObject.SetActive (false);
+
+		cardRecognizedImage.gameObject.SetActive (false);
+		cardUnknownImage.gameObject.SetActive (false);
+
         this.faceRecognition = this.gameObject.AddComponent<FaceRecognition>();
 	}
 	
@@ -39,7 +50,7 @@ public class RecognitionScript : MonoBehaviour {
 
             faceRecognition.Recognize(WebCamCapture.WebCamTexture, name =>
             {
-                this.ShowPerson();
+                this.ShowPerson(name);
             });
 		}
 
@@ -58,12 +69,23 @@ public class RecognitionScript : MonoBehaviour {
 		}
 	}
 
-	private void ShowPerson() {
+	private void ShowPerson(string name) {
+		cardImage.gameObject.SetActive (false);
+		if (name != null) {
+			cardRecognizedImage.gameObject.SetActive (true);
+			var userInfo = this.gameObject.AddComponent<UserInfo> ();
+			userInfo.ApplyPersonImage (faceImage, name);
+			faceImage.gameObject.SetActive (true);
+			nameText.text = name;
+			nameText.gameObject.SetActive (true);
+		} else {
+			cardUnknownImage.gameObject.SetActive (true);
+		}
 		ShowInstructionsPanel();
 	}
 
 	private void ShowInstructionsPanel() {
-		showInstructionsTimeLeft = 2.0f;
+		showInstructionsTimeLeft = 5.0f;
 		showInstructions = true;
 	}
 }

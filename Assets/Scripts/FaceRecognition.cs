@@ -40,59 +40,55 @@ public class FaceRecognition : MonoBehaviour {
 			RecognizedFace[] faces = UserInfo.JsonHelper.getJsonArray<RecognizedFace> (result);
 			if (faces.Length > 0) {
 
-				string faceId = faces[0].faceId;
+				string faceId = faces [0].faceId;
 			
-				var jsonString = "{'personGroupId':'66549acf-e321-4417-8498-91cc9e0ce819','faceIds':['"+faceId+"'],'maxNumOfCandidatesReturned':1}";
+				var jsonString = "{'personGroupId':'66549acf-e321-4417-8498-91cc9e0ce819','faceIds':['" + faceId + "'],'maxNumOfCandidatesReturned':1}";
  
-				var encoding = new System.Text.UTF8Encoding();
-				var postHeader = new Dictionary<string, string>();
+				var encoding = new System.Text.UTF8Encoding ();
+				var postHeader = new Dictionary<string, string> ();
    
-				postHeader.Add("Content-Type", "application/json");
-				postHeader.Add("Content-Length", jsonString.Length.ToString());
-				postHeader.Add("Ocp-Apim-Subscription-Key", "a0c4cd4744844acfa4863ce0dc9ad2c9");
+				postHeader.Add ("Content-Type", "application/json");
+				postHeader.Add ("Content-Length", jsonString.Length.ToString ());
+				postHeader.Add ("Ocp-Apim-Subscription-Key", "a0c4cd4744844acfa4863ce0dc9ad2c9");
  
-				var request = new WWW("https://api.projectoxford.ai/face/v1.0/identify", encoding.GetBytes(jsonString), postHeader);
+				var request = new WWW ("https://api.projectoxford.ai/face/v1.0/identify", encoding.GetBytes (jsonString), postHeader);
 				yield return request;
 
-			    if (!string.IsNullOrEmpty(www.error))
-			    {
-			        Debug.LogWarning(request.error);
-			        callback(null);
-			    }
-			    else
-			    {
-			        string json = request.text;
-			        Debug.Log(json);
+				if (!string.IsNullOrEmpty (www.error)) {
+					Debug.LogWarning (request.error);
+					callback (null);
+				} else {
+					string json = request.text;
+					Debug.Log (json);
 
-			        RecognitionResult[] res = UserInfo.JsonHelper.getJsonArray<RecognitionResult>(request.text);
+					RecognitionResult[] res = UserInfo.JsonHelper.getJsonArray<RecognitionResult> (request.text);
 
-			        String url =
-			            "https://api.projectoxford.ai/face/v1.0/persongroups/66549acf-e321-4417-8498-91cc9e0ce819/persons/" +
-			            res[0].candidates[0].personId;
+					String url =
+						"https://api.projectoxford.ai/face/v1.0/persongroups/66549acf-e321-4417-8498-91cc9e0ce819/persons/" +
+						res [0].candidates [0].personId;
 
-			        Dictionary<string, string> headers3 = new Dictionary<string, string>();
-			        headers3.Add("Ocp-Apim-Subscription-Key", "a0c4cd4744844acfa4863ce0dc9ad2c9");
+					Dictionary<string, string> headers3 = new Dictionary<string, string> ();
+					headers3.Add ("Ocp-Apim-Subscription-Key", "a0c4cd4744844acfa4863ce0dc9ad2c9");
 
-			        WWW finalRequest = new WWW(url, null, headers3);
-			        yield return finalRequest;
+					WWW finalRequest = new WWW (url, null, headers3);
+					yield return finalRequest;
 
-			        if (!string.IsNullOrEmpty(finalRequest.error))
-			        {
-			            Debug.LogWarning(finalRequest.error);
-			            callback(null);
-			        }
-			        else
-			        {
-			            Debug.Log(finalRequest.text);
+					if (!string.IsNullOrEmpty (finalRequest.error)) {
+						Debug.LogWarning (finalRequest.error);
+						callback (null);
+					} else {
+						Debug.Log (finalRequest.text);
 
-			            ObjectWithName person = JsonUtility.FromJson<ObjectWithName>(finalRequest.text);
+						ObjectWithName person = JsonUtility.FromJson<ObjectWithName> (finalRequest.text);
 
-			            // !!!!!!!!!!!!!!!!!!!
-			            Debug.Log(person.name);
-                        callback(person.name);
-			        }
-			    }
+						// !!!!!!!!!!!!!!!!!!!
+						Debug.Log (person.name);
+						callback (person.name);
+					}
+				}
 
+			} else {
+				callback (null);
 			}
 		}
 	}
