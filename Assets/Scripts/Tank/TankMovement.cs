@@ -24,14 +24,12 @@ public class TankMovement : NetworkBehaviour
     /// <summary>
     /// The speed.
     /// </summary>
-    [SerializeField]
-    public float speed = 0.3f;                   // How fast the tank moves forward and back.
+    private float speed = 7.5f;                   // How fast the tank moves forward and back.
 
     /// <summary>
     /// The turn speed.
     /// </summary>
-    [SerializeField]
-    public float turnSpeed = 10;              // How fast the tank turns in degrees per second.
+    private float turnSpeed = 70;              // How fast the tank turns in degrees per second.
 
     /// <summary>
     /// The pitch range.
