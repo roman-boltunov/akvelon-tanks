@@ -72,6 +72,8 @@ namespace Prototype.NetworkLobby
                     if (lobbySlots[i] != null)
                     {
                         (lobbySlots[i] as LobbyPlayer).RpcReady();
+                        (lobbySlots[i] as LobbyPlayer).readyToBegin = true;
+
                     }
                 }
 
@@ -81,12 +83,26 @@ namespace Prototype.NetworkLobby
 
             // attack/defense
             NetworkServer.RegisterHandler(MsgType.Highest + 103, (NetworkMessage netMsg) => {
+
+                bool ready = false;
+
                 for (int i = 0; i < lobbySlots.Length; ++i)
                 {
                     if (lobbySlots[i] != null)
                     {
-                        (lobbySlots[i] as LobbyPlayer).RpcStandIsReady();
+                        var player = lobbySlots[i] as LobbyPlayer;
+                        player.RpcStandIsReady();
+                        if (player.isStandPlayer) {
+                            player.readyToBegin = true;
+                        }
+
+                        if (player.isLocalPlayer && player.readyToBegin) {
+                            ready = true;
+                        }
                     }
+                }
+                if (ready) {
+                    StartCoroutine(ServerCountdownCoroutine());
                 }
             });
 
