@@ -43,9 +43,12 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
                 GameObject.Find("ButtonAttack").GetComponent<Button>().GetComponentInChildren<Text>().text = "Defense";
             });
 
-			string serverIP = GameObject.Find("InputField").GetComponent<InputField>().text;
+			// string serverIP = GameObject.Find("InputField").GetComponent<InputField>().text;
 
-			client.Connect (serverIP, 7777);
+			// Debug.Log("serverIP: " + serverIP);
+
+			// client.Connect (serverIP, 7777);
+			client.Connect ("127.0.0.1", 7777);
 		});
 
 
