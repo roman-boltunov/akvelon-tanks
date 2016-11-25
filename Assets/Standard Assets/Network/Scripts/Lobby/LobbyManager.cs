@@ -114,7 +114,6 @@ namespace Prototype.NetworkLobby
 
             SetServerInfo("Offline", "None");
 
-            // WTF???
             var attackGameobject = GameObject.Find("AttackButton");
             if (attackGameobject == null)
             {
