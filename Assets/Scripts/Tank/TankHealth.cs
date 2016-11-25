@@ -103,7 +103,7 @@ public class TankHealth : NetworkBehaviour
         if (active) m_Manager.EnableControl();
         else m_Manager.DisableControl();
 
-        m_Setup.ActivateCrown(active);
+        // m_Setup.ActivateCrown(active);
     }
 
     // This function is called at the start of each round to make sure each tank is set up correctly.
