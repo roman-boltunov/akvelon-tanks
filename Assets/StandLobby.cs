@@ -53,9 +53,27 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
 	}
 
+	private void startStopMainPageVideo(bool isPlaying) {
+		// set/stop main panel video
+		Renderer mainPageVideo = GetComponent<Renderer>();
+		if (mainPageVideo) {
+			((MovieTexture)mainPageVideo.material.mainTexture).Play();
+		}
+	}
+
 	private void setActivePanel(GameObject activePanel) {
-		mainPanel.SetActive(mainPanel == activePanel);
+		// set/stop main panel video
+		if(mainPanel == activePanel) {
+			mainPanel.SetActive(true);
+			startStopMainPageVideo(true);
+
+		} else {
+			startStopMainPageVideo(false);
+			mainPanel.SetActive(true);
+		}
+		
 		connectPanel.SetActive(connectPanel == activePanel);
+
 	}
 
 	private void OnConnectedToServer() {
