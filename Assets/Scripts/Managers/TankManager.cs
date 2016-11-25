@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 [Serializable]
 public class TankManager
@@ -55,6 +56,12 @@ public class TankManager
         m_Setup.m_PlayerName = m_PlayerName;
         m_Setup.m_PlayerNumber = m_PlayerNumber;
         m_Setup.m_LocalID = m_LocalPlayerID;
+
+        var userInfo = m_Instance.AddComponent<UserInfo>();
+
+        Image ava = m_Instance.transform.FindChild("PhotoCanvas").FindChild("PhotoDisplay").gameObject.GetComponent<Image>();
+
+        userInfo.ApplyPersonImage(ava, m_PlayerName);
     }
 
 
