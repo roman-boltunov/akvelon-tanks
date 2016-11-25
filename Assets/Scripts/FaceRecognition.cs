@@ -18,7 +18,6 @@ public class FaceRecognition : MonoBehaviour {
      	snap.SetPixels(camera.GetPixels());
 		byte[] data = snap.EncodeToPNG();
 
-
 		string requestUrl = "https://api.projectoxford.ai/face/v1.0/detect?returnFaceId=True&returnFaceLandmarks=False";
 
 		Dictionary<string, string> headers = new Dictionary<string, string>(); 
@@ -30,6 +29,7 @@ public class FaceRecognition : MonoBehaviour {
 
 		if(!string.IsNullOrEmpty(www.error)) {
 			Debug.LogWarning(www.error);
+			yield break;
 		} else {
 			string result = www.text;
 			Debug.Log(result);
@@ -50,13 +50,36 @@ public class FaceRecognition : MonoBehaviour {
 				var request = new WWW("https://api.projectoxford.ai/face/v1.0/identify", encoding.GetBytes(jsonString), postHeader);
 				yield return request;
 
-				string err = request.error;
+				if(!string.IsNullOrEmpty(www.error)) {
+					Debug.LogWarning(request.error);
+				} else {
+					string json = request.text;
+					Debug.Log(json);
 				
+					RecognitionResult[] res =UserInfo.JsonHelper.getJsonArray<RecognitionResult>(request.text);
 
-				 //personGroupId = "66549acf-e321-4417-8498-91cc9e0ce819",
-					// faceIds = [faceId],
-                    // maxNumOfCandidatesReturned = 1
+					String url = "https://api.projectoxford.ai/face/v1.0/persongroups/66549acf-e321-4417-8498-91cc9e0ce819/persons/" +
+						res[0].candidates[0].personId;
 
+						Dictionary<string, string> headers3 = new Dictionary<string, string>(); 
+						headers3.Add("Ocp-Apim-Subscription-Key", "a0c4cd4744844acfa4863ce0dc9ad2c9");
+
+					WWW finalRequest = new WWW(url, null, headers3);
+					yield return finalRequest;
+
+					if (!string.IsNullOrEmpty(finalRequest.error)) {
+						Debug.LogWarning(finalRequest.error);
+					} else {
+						Debug.Log(finalRequest.text);
+
+						ObjectWithName person = JsonUtility.FromJson<ObjectWithName>(finalRequest.text);
+
+						// !!!!!!!!!!!!!!!!!!!
+						Debug.Log(person.name);
+					}
+					 
+				}
+				
 			}
 		}
 	}
@@ -68,8 +91,17 @@ class RecognizedFace {
 	public string faceId;
 }
 
-// face detection example
-//[{"faceId":"6a9c46a5-5709-47eb-94c1-9293417dc117","faceRectangle":{"top":243,"left":363,"width":301,"height":301}}
+[System.Serializable]
+class RecognitionResult {
+	public RecognitionCandidatate[] candidates;
+}
 
+[System.Serializable]
+class RecognitionCandidatate {
+	public string personId;
+}
 
-//"[{\"faceId\":\"f97538d4-b941-4b7b-a444-be082b94eef6\",\"candidates\":[{\"personId\":\"2ed7bb0b-0d26-4617-88b4…"
+[System.Serializable]
+class ObjectWithName {
+	public string name;
+}
