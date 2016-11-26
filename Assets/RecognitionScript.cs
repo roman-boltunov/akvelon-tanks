@@ -16,6 +16,8 @@ public class RecognitionScript : MonoBehaviour {
     private float scanTimeLeft;
 	private bool isScanned;
 
+	private string recognizedName;
+
     [SerializeField]
 	private StandLobby lobbyScript;
 
@@ -67,6 +69,7 @@ public class RecognitionScript : MonoBehaviour {
 			if (showInstructionsTimeLeft < 0) {
 				showInstructions = false;
 				lobbyScript.SetActivePanel (lobbyScript.instructionsPanel);
+				lobbyScript.instructionsPanel.GetComponent<InstructionsScript> ().setName (recognizedName);
 			}
 		}
 	}
@@ -86,6 +89,8 @@ public class RecognitionScript : MonoBehaviour {
 		} else {
 			cardUnknownImage.gameObject.SetActive (true);
 		}
+
+		recognizedName = name;
 		ShowInstructionsPanel();
 	}
 
