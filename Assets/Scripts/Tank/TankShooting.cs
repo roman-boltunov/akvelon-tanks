@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
@@ -28,8 +27,6 @@ public class TankShooting : NetworkBehaviour
     private float m_ChargeSpeed;            // How fast the launch force increases, based on the max charge time.
     private bool m_Fired;                   // Whether or not the shell has been launched with this button press.
 
-    private Stopwatch stopwatch;
-
     [UsedImplicitly]
     private void Awake()
     {
@@ -46,9 +43,6 @@ public class TankShooting : NetworkBehaviour
         
         // The rate that the launch force charges up is the range of possible forces by the max charge time.
         m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
-
-        this.stopwatch = new Stopwatch();
-        this.stopwatch.Start();
     }
 
     [ClientCallback]
@@ -60,11 +54,6 @@ public class TankShooting : NetworkBehaviour
 
         // The slider should have a default value of the minimum launch force.
         m_AimSlider.value = m_MinLaunchForce;
-
-        if (this.stopwatch.ElapsedMilliseconds < 1500)
-        {
-            return;
-        }
 
         // If the max force has been exceeded and the shell hasn't yet been launched...
         if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
@@ -104,8 +93,6 @@ public class TankShooting : NetworkBehaviour
     {
         // Set the fired flag so only Fire is only called once.
         m_Fired = true;
-        this.stopwatch.Reset();
-        this.stopwatch.Start();
 
         // Change the clip to the firing clip and play it.
         m_ShootingAudio.clip = m_FireClip;
