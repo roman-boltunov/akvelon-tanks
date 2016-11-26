@@ -12,7 +12,7 @@ public class GameManager : NetworkBehaviour
     //this is static so tank can be added even withotu the scene loaded (i.e. from lobby)
     static public List<TankManager> m_Tanks = new List<TankManager>();             // A collection of managers for enabling and disabling different aspects of the tanks.
 
-    public int m_NumRoundsToWin = 5;          // The number of rounds a single player has to win to win the game.
+    public int m_NumRoundsToWin = 3;          // The number of rounds a single player has to win to win the game.
     public float m_StartDelay = 3f;           // The delay between the start of RoundStarting and RoundPlaying phases.
     public float m_EndDelay = 3f;             // The delay between the end of RoundPlaying and RoundEnding phases.
     public CameraControl m_CameraControl;     // Reference to the CameraControl script for control during different phases.
@@ -110,7 +110,8 @@ public class GameManager : NetworkBehaviour
 
         // This code is not run until 'RoundEnding' has finished.  At which point, check if there is a winner of the game.
         if (m_GameWinner != null)
-        {// If there is a game winner, wait for certain amount or all player confirmed to start a game again
+        {
+            // If there is a game winner, wait for certain amount or all player confirmed to start a game again
             m_GameIsFinished = true;
             float leftWaitTime = 15.0f;
             bool allAreReady = false;
@@ -326,7 +327,9 @@ public class GameManager : NetworkBehaviour
 
             // ... and if one of them has enough rounds to win the game, return it.
             if (m_Tanks[i].m_Wins == m_NumRoundsToWin)
+            {
                 return m_Tanks[i];
+            }
         }
 
         //go throught a second time to enable/disable the crown on tanks
