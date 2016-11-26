@@ -17,9 +17,6 @@ public class InstructionsScript : MonoBehaviour {
 	public Text nameText;
 	public Image faceImage;
 
-    [SerializeField]
-    private StandLobby lobby;
-
 	// Use this for initialization
 	void Start () {
 		unknownCard.gameObject.SetActive (false);
@@ -42,13 +39,13 @@ public class InstructionsScript : MonoBehaviour {
 		if (timeLeft < 0 && !gameStarted) {
 			gameStarted = true;
 
-			this.lobby.SendAttackEvent();
+			StandLobby.Instance.SendAttackEvent();
 		}
 	}
 
 	public void PlayVideo(bool play) {
-		this.lobby.PlayRawImage(instructionImage, play);
-		this.lobby.PlayRawImage(tankImage, play);
+		StandLobby.Instance.PlayRawImage(instructionImage, play);
+		StandLobby.Instance.PlayRawImage(tankImage, play);
 	}
 
 	public void setName(string name) {

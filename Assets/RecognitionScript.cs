@@ -18,9 +18,6 @@ public class RecognitionScript : MonoBehaviour {
 
 	private string recognizedName;
 
-    [SerializeField]
-	private StandLobby lobbyScript;
-
 	private float showInstructionsTimeLeft;
 	private bool showInstructions;
     private FaceRecognition faceRecognition;
@@ -50,10 +47,10 @@ public class RecognitionScript : MonoBehaviour {
 		if (scanTimeLeft < 0 && !isScanned) {
 			isScanned = true;
 
-            this.lobbyScript.spinner.SetActive(true);
+            // StandLobby.Instance.spinner.SetActive(true);
             faceRecognition.Recognize(WebCamCapture.WebCamTexture, name =>
             {
-                this.lobbyScript.spinner.SetActive(false);
+                // StandLobby.Instance.spinner.SetActive(false);
                 this.ShowPerson(name);
             });
 		}
@@ -68,8 +65,8 @@ public class RecognitionScript : MonoBehaviour {
 			showInstructionsTimeLeft -= Time.deltaTime;
 			if (showInstructionsTimeLeft < 0) {
 				showInstructions = false;
-				lobbyScript.SetActivePanel (lobbyScript.instructionsPanel);
-				lobbyScript.instructionsPanel.GetComponent<InstructionsScript> ().setName (recognizedName);
+				StandLobby.Instance.SetActivePanel (StandLobby.Instance.sceneObjects.instructionsPanel);
+				StandLobby.Instance.sceneObjects.instructionsPanel.GetComponent<InstructionsScript> ().setName (recognizedName);
 			}
 		}
 	}
@@ -84,7 +81,7 @@ public class RecognitionScript : MonoBehaviour {
 			nameText.text = name;
 			nameText.gameObject.SetActive (true);
 			
-			 this.lobbyScript.changeStandPlayerNameOnServer(name);
+			 StandLobby.Instance.changeStandPlayerNameOnServer(name);
 
 		} else {
 			cardUnknownImage.gameObject.SetActive (true);

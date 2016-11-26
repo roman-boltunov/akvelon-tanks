@@ -169,6 +169,13 @@ namespace Prototype.NetworkLobby
             });
         }
 
+        public void NotifyStandGameIsOver() {
+             if (_standLobbyConnection != null)
+            {
+                _standLobbyConnection.Send(MsgType.Highest + 120, new KickMsg());
+            }
+        }
+
         [System.Serializable]
         public class PlayerNameMsg : MessageBase {
 

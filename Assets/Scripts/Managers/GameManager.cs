@@ -140,6 +140,7 @@ public class GameManager : NetworkBehaviour
             }
 
             LobbyManager.s_Singleton.ServerReturnToLobby();
+            LobbyManager.s_Singleton.NotifyStandGameIsOver();
         }
         else
         {
