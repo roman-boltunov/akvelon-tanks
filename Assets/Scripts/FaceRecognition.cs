@@ -63,7 +63,7 @@ public class FaceRecognition : MonoBehaviour {
 
 					RecognitionResult[] res = UserInfo.JsonHelper.getJsonArray<RecognitionResult> (request.text);
 
-					if (res.Length< 1 || res[0].candidates.Length<0) {
+					if (res.Length < 1 || res[0].candidates.Length < 1) {
 						callback (null);
 						yield break;
 					}
