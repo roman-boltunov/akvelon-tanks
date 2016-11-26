@@ -48,8 +48,10 @@ public class RecognitionScript : MonoBehaviour {
 		if (scanTimeLeft < 0 && !isScanned) {
 			isScanned = true;
 
+            this.lobbyScript.spinner.SetActive(true);
             faceRecognition.Recognize(WebCamCapture.WebCamTexture, name =>
             {
+                this.lobbyScript.spinner.SetActive(false);
                 this.ShowPerson(name);
             });
 		}

@@ -28,6 +28,8 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
     [SerializeField]
 	private InstructionsScript instructionsScript;
 
+    public GameObject spinner;
+
 	// Use this for initialization
     //http://gamedev.stackexchange.com/questions/102526/why-will-my-server-not-execute-a-command-sent-by-the-client-in-unity-5-1
 	[UsedImplicitly]
