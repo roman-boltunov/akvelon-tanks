@@ -252,6 +252,16 @@ namespace Prototype.NetworkLobby
         }
 
         [ClientRpc]
+        public void RpcStandAssignName(string name)
+        {
+            // 
+            if (this.isLocalPlayer && isStandPlayer)
+            {
+                OnNameChanged(name);
+            }
+        }
+
+        [ClientRpc]
         public void RpcHostIsReady()
         {
             // 

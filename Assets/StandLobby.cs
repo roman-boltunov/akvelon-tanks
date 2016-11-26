@@ -203,105 +203,16 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 	
 	}
 
-    class EmptyMsg : MessageBase { }
-    // private void OnServerConnect(NetworkMessage netMsg)
-    // {
-    //    // LobbyManager.s_Singleton.CmdAllReadyButton();
-	// //    bool sent = client.Send (MsgType.Highest + 101, new TestMsg());
-	//    //netMsg.conn
-    // }
-
-    // public virtual void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
-	// {
-	// 	// var player = (GameObject)GameObject.Instantiate(playerPrefab, playerSpawnPos, Quaternion.identity);
-	// 	// NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
-	// }
-
-// 	public virtual void OnClientConnect(NetworkConnection conn) {
-
-		
-// 		//ClientScene.AddPlayer (0);
-// 		 ClientScene.Ready(conn);
-
-// 		Debug.Log ("OnClientConnect: " + this.numPlayers);
-// 		// conn.playerControllers.ForEach((p) => {
-// 		// 	//p.unetView.isClient
-// 		// 	Debug.Log ("playerControllerId: " + p.playerControllerId);
-
-// 		// });
-// //		conn.playerControllers[0].unetView.isClient
-// 	}
-
-// 	public virtual void OnStartClient(NetworkClient client) {
-		
-// 	}
-
-	// public virtual void OnServerConnect(NetworkConnection conn)
-	// {
-	// 	Debug.Log ("OnServerConnect");
-	// }
-
-	//  public virtual void OnClientSceneChanged(NetworkConnection conn) {
-
-	//  }
 	
-	// Update is called once per frame
+	public void changeStandPlayerNameOnServer(string playerName) {
+		bool isSent = this.client.Send (MsgType.Highest + 112, new LobbyManager.PlayerNameMsg(playerName));
+		Debug.Log("StartFame msg sent: " + isSent);
+	}
+
+    class EmptyMsg : MessageBase { }
+    
 	void Update () {
 	
 	}
 }
 
-
-// public virtual void OnClientConnect(NetworkConnection conn)
-//         {
-//             if (string.IsNullOrEmpty(m_OnlineScene) || (m_OnlineScene == m_OfflineScene))
-//             {
-//                 ClientScene.Ready(conn);
-//                 if (m_AutoCreatePlayer)
-//                 {
-//                     ClientScene.AddPlayer(0);
-//                 }
-//             }
-//             else
-//             {
-//                 // player will be added when on-line scene finishes loading
-//             }
-//         }
-// Code (CSharp):
- 
-//         public virtual void OnClientSceneChanged(NetworkConnection conn)
-//         {
-//             // always become ready.
-//             ClientScene.Ready(conn);
- 
-//             if (!m_AutoCreatePlayer)
-//             {
-//                 return;
-//             }
- 
-//             bool addPlayer = false;
-//             if (ClientScene.localPlayers.Count == 0)
-//             {
-//                 // no players exist
-//                 addPlayer = true;
-//             }
- 
-//             bool foundPlayer = false;
-//             foreach (var playerController in ClientScene.localPlayers)
-//             {
-//                 if (playerController.gameObject != null)
-//                 {
-//                     foundPlayer = true;
-//                     break;
-//                 }
-//             }
-//             if (!foundPlayer)
-//             {
-//                 // there are players, but their game objects have all been deleted
-//                 addPlayer = true;
-//             }
-//             if (addPlayer)
-//             {
-//                 ClientScene.AddPlayer(0);
-//             }
-//         }

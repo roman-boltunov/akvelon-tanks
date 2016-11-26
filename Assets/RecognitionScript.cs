@@ -80,6 +80,9 @@ public class RecognitionScript : MonoBehaviour {
 			faceImage.gameObject.SetActive (true);
 			nameText.text = name;
 			nameText.gameObject.SetActive (true);
+			
+			 this.lobbyScript.changeStandPlayerNameOnServer(name);
+
 		} else {
 			cardUnknownImage.gameObject.SetActive (true);
 		}

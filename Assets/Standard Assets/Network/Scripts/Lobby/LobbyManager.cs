@@ -153,6 +153,20 @@ namespace Prototype.NetworkLobby
                         _standLobbyConnection.Send(MsgType.Highest + 104, new PlayerNameMsg(localPlayerName));
                     }
                 });
+
+                // lobby player name
+                NetworkServer.RegisterHandler(MsgType.Highest + 112, (NetworkMessage netMsg) => {
+                    
+					var playerNameMsg = netMsg.ReadMessage<LobbyManager.PlayerNameMsg>();
+
+                    for (int i = 0; i < lobbySlots.Length; ++i)
+                    {
+                        if (lobbySlots[i] != null)
+                        {
+                            (lobbySlots[i] as LobbyPlayer).RpcStandAssignName(playerNameMsg.name);                           
+                        }
+                    }
+            });
         }
 
         [System.Serializable]
