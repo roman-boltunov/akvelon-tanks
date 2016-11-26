@@ -220,7 +220,7 @@ public class TankMovement : NetworkBehaviour
     [UsedImplicitly]
     private void FixedUpdate()
     {
-        var threshold = 0.2f;
+        var threshold = 0.7f;
         if (!this.isLocalPlayer)
         {
             return;
