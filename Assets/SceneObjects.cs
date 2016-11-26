@@ -16,7 +16,9 @@ public class SceneObjects : MonoBehaviour
 		Instance = new SceneObjects();
 	}
 
-	public Text statusInfo;
+    public GameObject spinner;
+
+    public Text statusInfo;
 
 	[SerializeField]
 	public GameObject mainPanel;

@@ -12,8 +12,6 @@ public class StandLobby : NetworkLobbyManager
 {
 	public static StandLobby Instance {get;set;}
 
-    public GameObject spinner;
-
     // Defense mode only
 	private string opponentName;
 

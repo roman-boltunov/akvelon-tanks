@@ -47,10 +47,10 @@ public class RecognitionScript : MonoBehaviour {
 		if (scanTimeLeft < 0 && !isScanned) {
 			isScanned = true;
 
-            // StandLobby.Instance.spinner.SetActive(true);
+            var spinner = GameObject.Instantiate(StandLobby.Instance.sceneObjects.spinner);
             faceRecognition.Recognize(WebCamCapture.WebCamTexture, name =>
             {
-                // StandLobby.Instance.spinner.SetActive(false);
+                GameObject.Destroy(spinner);
                 this.ShowPerson(name);
             });
 		}
