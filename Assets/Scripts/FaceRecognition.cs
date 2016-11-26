@@ -63,6 +63,12 @@ public class FaceRecognition : MonoBehaviour {
 
 					RecognitionResult[] res = UserInfo.JsonHelper.getJsonArray<RecognitionResult> (request.text);
 
+					if (res.Length< 1 || res[0].candidates.Length<0) {
+						callback (null);
+						yield break;
+					}
+
+
 					String url =
 						"https://api.projectoxford.ai/face/v1.0/persongroups/66549acf-e321-4417-8498-91cc9e0ce819/persons/" +
 						res [0].candidates [0].personId;
