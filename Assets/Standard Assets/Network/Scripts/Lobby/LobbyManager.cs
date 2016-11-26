@@ -105,7 +105,7 @@ namespace Prototype.NetworkLobby
 
                     if (_standLobbyConnection != null)
                     {
-                        _standLobbyConnection.Send(MsgType.Highest + 111, new AttackMsg());
+                        _standLobbyConnection.Send(MsgType.Highest + 111, new PlayerNameMsg());
                     }
 
                     StartCoroutine(ServerCountdownCoroutine());
@@ -134,22 +134,38 @@ namespace Prototype.NetworkLobby
 
             this.attackButton.onClick.AddListener(() =>
                 {
+                    var localPlayerName = "Anonymous";
+                    
                     foreach (NetworkLobbyPlayer lobbyPlayer in lobbySlots)
                     {
                         if (lobbyPlayer != null)
                         {
                             (lobbyPlayer as LobbyPlayer).RpcHostIsReady();
+
+                            if (lobbyPlayer.isLocalPlayer) {
+                                localPlayerName = (lobbyPlayer as LobbyPlayer).playerName;
+                            }
                         }
                     }
 
                     if (_standLobbyConnection != null)
                     {
-                        _standLobbyConnection.Send(MsgType.Highest + 104, new AttackMsg());
+                        _standLobbyConnection.Send(MsgType.Highest + 104, new PlayerNameMsg(localPlayerName));
                     }
                 });
         }
 
-        class AttackMsg : MessageBase { }
+        [System.Serializable]
+        public class PlayerNameMsg : MessageBase {
+
+            public PlayerNameMsg() {
+                this.name = "Anonymous";
+            }
+            public PlayerNameMsg(string name) {
+                this.name = name;
+            }
+            public string name;
+         }
         public override void OnLobbyClientSceneChanged(NetworkConnection conn)
         {
             if (SceneManager.GetSceneAt(0).name == lobbyScene)
@@ -301,10 +317,8 @@ namespace Prototype.NetworkLobby
         public void KickPlayer(NetworkConnection conn)
         {
             conn.Send(MsgKicked, new KickMsg());
+
         }
-
-
-
 
         public void KickedMessageHandler(NetworkMessage netMsg)
         {

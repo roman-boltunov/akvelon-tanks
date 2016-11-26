@@ -30,6 +30,9 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 
     public GameObject spinner;
 
+    // Defense mode only
+	private string opponentName;
+
 	// Use this for initialization
     //http://gamedev.stackexchange.com/questions/102526/why-will-my-server-not-execute-a-command-sent-by-the-client-in-unity-5-1
 	[UsedImplicitly]
@@ -57,6 +60,9 @@ public class StandLobby : NetworkLobbyManager {//NetworkLobbyManager {
 			client.RegisterHandler(MsgType.Error, OnError);
 
 			client.RegisterHandler(MsgType.Highest + 104, (NetworkMessage netMsg) => {
+
+					var attackMsg = netMsg.ReadMessage<LobbyManager.PlayerNameMsg>();
+					this.opponentName = attackMsg.name;
 					SetActivePanel(defencePanel);
             });
 
