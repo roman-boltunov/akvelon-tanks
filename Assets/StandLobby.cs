@@ -161,6 +161,7 @@ public class StandLobby : NetworkLobbyManager
 		if (this.sceneObjects.defencePanel == activePanel) {
 			this.sceneObjects.defencePanel.SetActive (true);
 			PlayDefencePageVideo (true);
+			this.sceneObjects.defencePanel.GetComponent<DefenceScript> ().setAttackerName (opponentName);
 		} else {
 			PlayDefencePageVideo (false);
 			this.sceneObjects.defencePanel.SetActive (false);
