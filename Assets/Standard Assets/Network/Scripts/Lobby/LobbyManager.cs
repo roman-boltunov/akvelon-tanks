@@ -91,14 +91,20 @@ namespace Prototype.NetworkLobby
                     if (lobbySlots[i] != null)
                     {
                         var player = lobbySlots[i] as LobbyPlayer;
-                        player.RpcStandIsReady();
-                        if (player.isStandPlayer) {
-                            player.readyToBegin = true;
-                        }
+                        // player.RpcStandIsReady();
+                        // if (player.isStandPlayer) {
+                        //     player.readyToBegin = true;
+                        // }
 
-                        if (player.isLocalPlayer && player.readyToBegin) {
-                            ready = true;
-                        }
+                        // if (player.isLocalPlayer && player.readyToBegin) {
+                        //     ready = true;
+                        // }
+                        // when stand is ready host player is automatically joined as well.
+                        ready = true;
+                        player.RpcStandIsReady();
+                        player.RpcHostIsReady();
+
+
                     }
                 }
                 if (ready) {
