@@ -3,10 +3,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Collections.Generic;
+using System.Linq;
+using Assets.Scripts.Managers;
 using Prototype.NetworkLobby;
 
 public class GameManager : NetworkBehaviour
 {
+    private readonly Vector3 defaultBattlefieldCameraPosition = new Vector3(-43.12191f, 41.7812f, -24.89643f);
+
+    private readonly Quaternion defaultBattlefieldCameraRotation = Quaternion.Euler(39.996f, 59.984f, 0);
+
     static public GameManager s_Instance;
 
     //this is static so tank can be added even withotu the scene loaded (i.e. from lobby)
@@ -30,6 +36,7 @@ public class GameManager : NetworkBehaviour
     [Header("UI")]
     public CanvasGroup m_FadingScreen;  
     public CanvasGroup m_EndRoundScreen;
+    public Button changeViewButton;
 
     private int m_RoundNumber;                  // Which round the game is currently on.
     private WaitForSeconds m_StartWait;         // Used to have a delay whilst the round starts.
@@ -37,14 +44,19 @@ public class GameManager : NetworkBehaviour
     private TankManager m_RoundWinner;          // Reference to the winner of the current round.  Used to make an announcement of who won.
     private TankManager m_GameWinner;           // Reference to the winner of the game.  Used to make an announcement of who won.
 
+    private CurrentLobbyCamera currentLobbyCamera = CurrentLobbyCamera.WholeBattleField;
+
     void Awake()
     {
         s_Instance = this;
+        this.changeViewButton.gameObject.SetActive(StandLobby.Instance != null);
     }
 
     [ServerCallback]
     private void Start()
     {
+        this.changeViewButton.gameObject.SetActive(StandLobby.Instance != null);
+
         // Create the delays so they only have to be made once.
         m_StartWait = new WaitForSeconds(m_StartDelay);
         m_EndWait = new WaitForSeconds(m_EndDelay);
@@ -72,6 +84,58 @@ public class GameManager : NetworkBehaviour
         tmp.Setup();
 
         m_Tanks.Add(tmp);
+    }
+
+    public void ChangeView()
+    {
+        if (StandLobby.Instance == null)
+        {
+            return;
+        }
+
+        var mainCamera = Camera.main;
+
+        switch (this.currentLobbyCamera)
+        {
+            case CurrentLobbyCamera.WholeBattleField:
+                this.currentLobbyCamera = CurrentLobbyCamera.Player1;
+                break;
+            case CurrentLobbyCamera.Player1:
+                this.currentLobbyCamera = CurrentLobbyCamera.Player2;
+                break;
+            case CurrentLobbyCamera.Player2:
+                this.currentLobbyCamera = CurrentLobbyCamera.WholeBattleField;
+                break;
+        }
+
+        switch (this.currentLobbyCamera)
+        {
+                case CurrentLobbyCamera.WholeBattleField:
+                    mainCamera.transform.parent = null;
+                    mainCamera.transform.position = this.defaultBattlefieldCameraPosition;
+                    mainCamera.transform.rotation = this.defaultBattlefieldCameraRotation;
+                    break;
+                case CurrentLobbyCamera.Player1:
+                    var turrets = GameObject.FindObjectsOfType<GameObject>().Where(go => go.name == "TankTurret").ToList();
+                    if (turrets.Count > 0)
+                    {
+                        mainCamera.transform.parent = turrets[0].transform;
+                        mainCamera.transform.forward = turrets[0].transform.forward;
+                        mainCamera.transform.localPosition = new Vector3(0, 2, -1);
+                    }
+
+                    break;
+                case CurrentLobbyCamera.Player2:
+                    var tankTurrets = GameObject.FindObjectsOfType<GameObject>().Where(go => go.name == "TankTurret").ToList();
+                    if (tankTurrets.Count > 1)
+                    {
+                        mainCamera.transform.parent = tankTurrets[1].transform;
+                        mainCamera.transform.forward = tankTurrets[1].transform.forward;
+                        mainCamera.transform.localPosition = new Vector3(0, 2, -1);
+                    }
+
+                    break;
+        }
     }
 
     public void RemoveTank(GameObject tank)
